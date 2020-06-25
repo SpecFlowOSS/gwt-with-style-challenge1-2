@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace UserRepository
 {
@@ -28,7 +29,7 @@ namespace UserRepository
         private void CheckForIdenticalUserName(string userName)
         {
             if (_userRepositoryStore.GetUsers()
-                .Any(u => string.Equals(u.UserName, userName)))
+                .Any(u => string.Equals(u.UserName, userName, StringComparison.InvariantCultureIgnoreCase)))
                 throw new UserRepositoryException("Username taken");
         }
     }
