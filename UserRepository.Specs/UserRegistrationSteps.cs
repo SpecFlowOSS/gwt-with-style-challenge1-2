@@ -7,7 +7,7 @@ namespace UserRepository.Specs
     public class UserRegistrationSteps
     {
         private readonly UserRepositoryDriver _driver;
-
+        
         public UserRegistrationSteps(UserRepositoryDriver driver)
         {
             _driver = driver;
@@ -20,5 +20,12 @@ namespace UserRepository.Specs
 
             _driver.CreateUsers(users);
         }
+
+        [When(@"(.*) attempts to register with the username ""(.*)"" and email ""(.*)""")]
+        public void WhenAttemptsToRegisterWithTheUsernameAndEmail(string personalName, string userName, string email)
+        {
+            _driver.RegisterUser(personalName, userName, email);
+        }
+
     }
 }
