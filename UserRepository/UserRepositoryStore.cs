@@ -10,5 +10,10 @@ namespace UserRepository
         {
             _users.AddRange(users);
         }
+
+        public List<User> GetUsers()
+        {
+            return _users;
+        }
     }
 }

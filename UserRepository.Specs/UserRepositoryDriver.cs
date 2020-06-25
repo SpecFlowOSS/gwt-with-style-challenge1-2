@@ -22,5 +22,10 @@ namespace UserRepository.Specs
         {
             _userRepository.RegisterUser(personalName, userName, email);
         }
+
+        public List<User> GetAllUsers()
+        {
+            return _userRepositoryStore.GetUsers();
+        }
     }
 }

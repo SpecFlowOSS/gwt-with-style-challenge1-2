@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace UserRepository
+﻿namespace UserRepository
 {
     public class User
     {
@@ -9,5 +7,10 @@ namespace UserRepository
         public string PersonalName { get; set; }
 
         public string Email { get; set; }
+
+        public override string ToString()
+        {
+            return $"{PersonalName} ({UserName} - {Email})";
+        }
     }
 }
