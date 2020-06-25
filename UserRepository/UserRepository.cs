@@ -1,4 +1,6 @@
-﻿namespace UserRepository
+﻿using System.Linq;
+
+namespace UserRepository
 {
     public class UserRepository
     {
@@ -11,6 +13,8 @@
 
         public void RegisterUser(string personalName, string userName, string email)
         {
+            CheckForIdenticalUserName(userName);
+
             var user = new User
             {
                 PersonalName = personalName,
@@ -19,6 +23,13 @@
             };
 
             _userRepositoryStore.AddUsers(new []{user});
+        }
+
+        private void CheckForIdenticalUserName(string userName)
+        {
+            if (_userRepositoryStore.GetUsers()
+                .Any(u => string.Equals(u.UserName, userName)))
+                throw new UserRepositoryException("Username taken");
         }
     }
 }
