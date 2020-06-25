@@ -10,7 +10,7 @@ namespace UserRepository.Specs
     public class UserRegistrationSteps
     {
         private readonly UserRepositoryDriver _driver;
-        
+
         public UserRegistrationSteps(UserRepositoryDriver driver)
         {
             _driver = driver;
@@ -30,16 +30,24 @@ namespace UserRepository.Specs
             _driver.RegisterUser(personalName, userName, email);
         }
 
-        [Then(@"the user repository will contain the following users:")]
+        [Then(@"the user repository should contain the following users:")]
         public void ThenTheUserRepositoryWillContainTheFollowingUsers(Table table)
         {
             var expectedUsers = table.CreateSet<User>();
-            
-            var actualUsers =_driver.GetAllUsers();
+
+            var actualUsers = _driver.GetAllUsers();
 
 
             Assert.That(actualUsers, Is.EquivalentTo(expectedUsers).Using(new UserEqualityComparer()));
         }
+
+        [Then(@"the registration should fail with ""(.*)""")]
+        public void ThenTheRegistrationShouldFailWith(string expectedErrorMessage)
+        {
+            Assert.That(_driver.RegistrationErrorMessage, Is.Not.Null, () => "Registration did not fail");
+            Assert.That(_driver.RegistrationErrorMessage, Is.EqualTo(expectedErrorMessage), () => "Registration failed with wrong error message");
+        }
+
 
         public class UserEqualityComparer : IEqualityComparer<User>
         {

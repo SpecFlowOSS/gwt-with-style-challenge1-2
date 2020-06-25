@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace UserRepository.Specs
 {
@@ -6,6 +7,7 @@ namespace UserRepository.Specs
     {
         private readonly UserRepositoryStore _userRepositoryStore;
         private readonly UserRepository _userRepository;
+        private UserRepositoryException _lastException = null;
 
         public UserRepositoryDriver(UserRepositoryStore userRepositoryStore, UserRepository userRepository)
         {
@@ -20,12 +22,22 @@ namespace UserRepository.Specs
 
         public void RegisterUser(string personalName, string userName, string email)
         {
-            _userRepository.RegisterUser(personalName, userName, email);
+            try
+            {
+                _lastException = null;
+                _userRepository.RegisterUser(personalName, userName, email);
+            }
+            catch (UserRepositoryException error)
+            {
+                _lastException = error;
+            }
         }
 
         public List<User> GetAllUsers()
         {
             return _userRepositoryStore.GetUsers();
         }
+
+        public string RegistrationErrorMessage => _lastException?.Message;
     }
 }
