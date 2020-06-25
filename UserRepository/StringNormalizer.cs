@@ -6,9 +6,11 @@ namespace UserRepository
 {
     public class StringNormalizer
     {
-        public string Normalize(string s)
+        public string NormalizeUnicodeLowercaseInterpunction(string s)
         {
-            return NormalizeUnicode(s)?.ToLowerInvariant();
+            return NormalizeUnicode(s)
+                ?.ToLowerInvariant()
+                .Replace(".", "");
         }
 
         //TODO: implement a proper stringprep implementation according to https://tools.ietf.org/html/rfc3454

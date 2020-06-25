@@ -39,7 +39,7 @@ namespace UserRepository
 
         private string NormalizeUserName(string userName)
         {
-            return _stringNormalizer.Normalize(userName);
+            return _stringNormalizer.NormalizeUnicodeLowercaseInterpunction(userName);
         }
     }
 }
