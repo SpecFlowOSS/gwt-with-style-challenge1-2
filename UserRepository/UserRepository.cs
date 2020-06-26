@@ -7,11 +7,13 @@ namespace UserRepository
     {
         private readonly UserRepositoryStore _userRepositoryStore;
         private readonly StringNormalizer _stringNormalizer;
+        private readonly EmailNormalizer _emailNormalizer;
 
-        public UserRepository(UserRepositoryStore userRepositoryStore, StringNormalizer stringNormalizer)
+        public UserRepository(UserRepositoryStore userRepositoryStore, StringNormalizer stringNormalizer, EmailNormalizer emailNormalizer)
         {
             _userRepositoryStore = userRepositoryStore;
             _stringNormalizer = stringNormalizer;
+            _emailNormalizer = emailNormalizer;
         }
 
         public void RegisterUser(string personalName, string userName, string email)
@@ -58,52 +60,7 @@ namespace UserRepository
 
         private string NormalizeEmail(string email)
         {
-            var normalizedEmail = _stringNormalizer.NormalizeUnicodeLowercase(email);
-
-            (string normalizedEmailUserName, string normalizedEmailDomain) = SplitEmail(normalizedEmail);
-
-            if (IsGmail(normalizedEmailDomain))
-            {
-                normalizedEmailDomain = NormalizedGmailDomain;
-                normalizedEmailUserName = NormalizeGmailUserName(normalizedEmailUserName);
-            }
-
-            return $"{normalizedEmailUserName}@{normalizedEmailDomain}";
-        }
-
-        private string NormalizeGmailUserName(string normalizedEmailUserName)
-        {
-            return RemoveLabelsInGmailUserName(
-                RemoveDotsInGmailUserName(normalizedEmailUserName));
-        }
-
-        private string RemoveDotsInGmailUserName(string normalizedEmailUserName)
-        {
-            return normalizedEmailUserName.Replace(".", "");
-        }
-
-        private string RemoveLabelsInGmailUserName(string normalizedEmailUserName)
-        {
-            return new string(normalizedEmailUserName.TakeWhile(c => c != '+').ToArray());
-        }
-
-        private (string, string) SplitEmail(string email)
-        {
-            var parts = email.Split("@");
-            if (parts.Length != 2)
-                throw new UserRepositoryException("Invalid email");
-
-            var emailUserName = parts[0];
-            var emailDomain = parts[1];
-
-            return (emailUserName, emailDomain);
-        }
-
-        private const string NormalizedGmailDomain = "gmail.com";
-        private readonly string[] GmailDomains = new[] {NormalizedGmailDomain, "googlemail.com"};
-        private bool IsGmail(string normalizedEmailDomain)
-        {
-            return GmailDomains.Contains(normalizedEmailDomain);
+            return _emailNormalizer.Normalize(email);
         }
     }
 }
