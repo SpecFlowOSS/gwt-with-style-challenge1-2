@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace UserRepository
 {
@@ -72,12 +73,18 @@ namespace UserRepository
 
         private string NormalizeGmailUserName(string normalizedEmailUserName)
         {
-            return RemoveDotsInGmailUserName(normalizedEmailUserName);
+            return RemoveLabelsInGmailUserName(
+                RemoveDotsInGmailUserName(normalizedEmailUserName));
         }
 
         private string RemoveDotsInGmailUserName(string normalizedEmailUserName)
         {
             return normalizedEmailUserName.Replace(".", "");
+        }
+
+        private string RemoveLabelsInGmailUserName(string normalizedEmailUserName)
+        {
+            return new string(normalizedEmailUserName.TakeWhile(c => c != '+').ToArray());
         }
 
         private (string, string) SplitEmail(string email)
