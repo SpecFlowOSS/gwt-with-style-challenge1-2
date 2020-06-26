@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 namespace UserRepository
 {
@@ -58,7 +57,35 @@ namespace UserRepository
 
         private string NormalizeEmail(string email)
         {
-            return _stringNormalizer.NormalizeUnicodeLowercase(email);
+            var normalizedEmail = _stringNormalizer.NormalizeUnicodeLowercase(email);
+
+            (string normalizedEmailUserName, string normalizedEmailDomain) = SplitEmail(normalizedEmail);
+
+            if (IsGmail(normalizedEmailDomain))
+            {
+                normalizedEmailDomain = NormalizedGmailDomain;
+            }
+
+            return $"{normalizedEmailUserName}@{normalizedEmailDomain}";
+        }
+
+        private (string, string) SplitEmail(string email)
+        {
+            var parts = email.Split("@");
+            if (parts.Length != 2)
+                throw new UserRepositoryException("Invalid email");
+
+            var emailUserName = parts[0];
+            var emailDomain = parts[1];
+
+            return (emailUserName, emailDomain);
+        }
+
+        private const string NormalizedGmailDomain = "gmail.com";
+        private readonly string[] GmailDomains = new[] {NormalizedGmailDomain, "googlemail.com"};
+        private bool IsGmail(string normalizedEmailDomain)
+        {
+            return GmailDomains.Contains(normalizedEmailDomain);
         }
     }
 }
