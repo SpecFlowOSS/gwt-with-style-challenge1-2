@@ -17,6 +17,7 @@ namespace UserRepository
         public void RegisterUser(string personalName, string userName, string email)
         {
             CheckForIdenticalUserName(userName);
+            CheckForIdenticalEmail(email);
 
             var user = new User
             {
@@ -33,13 +34,31 @@ namespace UserRepository
             var normalizedUserName = NormalizeUserName(userName);
 
             if (_userRepositoryStore.GetUsers()
-                .Any(u => string.Equals(NormalizeUserName(u.UserName), normalizedUserName, StringComparison.InvariantCultureIgnoreCase)))
+                .Any(u => NormalizeUserName(u.UserName) == normalizedUserName)
+                
+            )
                 throw new UserRepositoryException("Username taken");
+        }
+
+        private void CheckForIdenticalEmail(string email)
+        {
+            var normalizedEmail = NormalizeEmail(email);
+
+            if (_userRepositoryStore.GetUsers()
+                .Any(u => NormalizeEmail(u.Email) == normalizedEmail)
+                
+            )
+                throw new UserRepositoryException("Email already registered");
         }
 
         private string NormalizeUserName(string userName)
         {
             return _stringNormalizer.NormalizeUnicodeLowercaseInterpunction(userName);
+        }
+
+        private string NormalizeEmail(string email)
+        {
+            return _stringNormalizer.NormalizeUnicodeLowercase(email);
         }
     }
 }

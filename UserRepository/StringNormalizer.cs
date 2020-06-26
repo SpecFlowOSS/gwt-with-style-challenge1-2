@@ -6,6 +6,12 @@ namespace UserRepository
 {
     public class StringNormalizer
     {
+        public string NormalizeUnicodeLowercase(string s)
+        {
+            return NormalizeUnicode(s)
+                ?.ToLowerInvariant();
+        }
+
         public string NormalizeUnicodeLowercaseInterpunction(string s)
         {
             return NormalizeUnicode(s)
