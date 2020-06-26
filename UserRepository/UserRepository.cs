@@ -64,9 +64,20 @@ namespace UserRepository
             if (IsGmail(normalizedEmailDomain))
             {
                 normalizedEmailDomain = NormalizedGmailDomain;
+                normalizedEmailUserName = NormalizeGmailUserName(normalizedEmailUserName);
             }
 
             return $"{normalizedEmailUserName}@{normalizedEmailDomain}";
+        }
+
+        private string NormalizeGmailUserName(string normalizedEmailUserName)
+        {
+            return RemoveDotsInGmailUserName(normalizedEmailUserName);
+        }
+
+        private string RemoveDotsInGmailUserName(string normalizedEmailUserName)
+        {
+            return normalizedEmailUserName.Replace(".", "");
         }
 
         private (string, string) SplitEmail(string email)
